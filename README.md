@@ -269,19 +269,19 @@ session [success=1 default=ignore] pam_localuser.so
 session required pam_winbind.so
 session   optional  pam_permit.so
 ```
-## 23. Проверяем связь с доменом
+## 22. Проверяем связь с доменом
 ##### kinit admin_user
 ##### klist
-## 24.	Вводим машину в домен.
+## 23.	Вводим машину в домен.
 ```
 sudo net ads join -U admin_user
 ```
-## 25.	Добавляем пользователя в группу docker
+## 24.	Добавляем пользователя в группу docker
 ```
 sudo usermod -a -G docker ad_user
 ```
-## 26.	REBOOT
-## 27.	Включаем службы и добавляем в автозагрузку
+## 25.	REBOOT
+## 26.	Включаем службы и добавляем в автозагрузку
 ```
 sudo systemctl start smb
 sudo systemctl start nmb
@@ -293,11 +293,11 @@ sudo systemctl enable smb
 sudo systemctl enable nmb
 sudo systemctl enable winbind
 ```
-## 28.	Скачиваем x11vnc
+## 27.	Скачиваем x11vnc
 ```
 sudo pacman -Syyuu x11vnc
 ```
-## 29.	Конфижим x11vnc
+## 28.	Конфижим x11vnc
 > sudo nano /etc/systemd/system/x11vnc.service
 ```
 Description=VNC Server for X11
@@ -307,7 +307,7 @@ After=display-manager.service
 Type=forking
 ExecStart=/usr/bin/x11vnc -auth guess -norc -forever -shared -bg -rfbauth /etc/x11vnc.passwd -autoport 5900 -o /var/log/x11vnc.log -xkb –repeat -noxrecord -noxfixes -nomodtweak 
 ```
-## 30.	Конфижим graphical.target
+## 29.	Конфижим graphical.target
 > sudo nano /etc/systemd/system/graphical.target
 
 ```
@@ -329,11 +329,11 @@ AllowIsolate=yes
 [Install]
 Alias=default.target
 ```
-## 31.	Пароль для VNC
+## 30.	Пароль для VNC
 ```
 x11vnc --storepasswd  /etc/x11vnc.passwd
 ```
-## 32.	Меняем внешний вид.
+## 31.	Меняем внешний вид.
 ```
 sudo pacman -R sddm-kcm
 sudo pacman –R sddm
@@ -342,14 +342,14 @@ sudo pacman –S lxdm
 sudo systemctl start lxdm
 sudo systemctl enable lxdm
 ```
-## 33.	Скидываем файл fix.sh
-## 34.	Обьясняем пользователю как добавить скрипт в автозагрузку !ВНИМАНИЕ! Делать из под учётки пользователя!
+## 32.	Скидываем файл fix.sh
+## 33.	Обьясняем пользователю как добавить скрипт в автозагрузку !ВНИМАНИЕ! Делать из под учётки пользователя!
 1. Пуск
 2. Поиск Autostart
 3. Add Script
 4. Choose desktop path => fix.sh
 5. OK
-## 35.	Решаем проблему с разрывами. автозагрузку !ВНИМАНИЕ! Делать из под учётки пользователя!
+## 34.	Решаем проблему с разрывами. автозагрузку !ВНИМАНИЕ! Делать из под учётки пользователя!
 1. Зайти в пуск
 2. Computer
 3. System settings
@@ -358,5 +358,5 @@ sudo systemctl enable lxdm
 6. Rendering backend : XRender
 7. Scale Method : Crisp
 8. Apply!
-## 36.  АНТИВИРУС????
+## 35.  АНТИВИРУС????
 
