@@ -17,24 +17,28 @@ sudo systemctl enable sshd
 sudo cp certificatename.crt /etc/ca-certificates/trust-source/anchors/
 sudo trust extract-compat
 ```
-## 5. Restart
-## 6. sudo pacman –Syyuu
-
-## 7. Скачиваем из гитхаба софт для пользователей
-
-### 7.1 Клонируем репозиторий
+## 5.   Устанавливаем yay и обновляем OS
 ```
-git clone https://github.com/pgagarinov/awesome-linux-config.git
+sudo pacman –Syyuu yay
+yay -Syyuu --nodiffmenu --nocleanmenu --noconfirm
 ```
-### 7.2 Заходим в папку проекта
+
+## 6. Скачиваем из гитхаба софт для пользователей
+
+### 6.1 Клонируем репозиторий
+```
+git clone https://github.com/alliedium/awesome-linux-config.git
+```
+### 6.2 Заходим в папку проекта
 ```
 cd awesome-linux-config/manjaro19/basic/
 ```
-### 7.3 Запускаем скрипты установки.
+### 6.3 Запускаем общесистемные скрипты установки.
 ```
 ./install_all.sh
 ```
-## 8.	Restart
+## 7. Переходим в папку sysadmin и выполняем требуемые инструкции.
+## 8. Перезагружаем ПК
 ## 9.	Понижаем версию ядра
 ```
 sudo mhwd-kernel –I linux54
@@ -48,18 +52,19 @@ Sudo mhwd-kernel –r linux
 ```
 ## 10.	Проверяем обновления
 ```
-sudo pacman –Syyuu
+yay -Syyuu --nodiffmenu --nocleanmenu --noconfirm
 ```
-## 11.	Устанавливаем необходимый софт для ввода машины в домен
+## 11.	Устанавливаем необходимый софт для ввода машины в домен (будет перенесено в папку sysadmin)
 ```
-sudo pacman –S samba krb5 sssd tree usbguard kmplayer mplayer pam-krb5 ntp
+yay –Syyuu samba krb5 sssd tree usbguard kmplayer mplayer pam-krb5 ntp --nodiffmenu --nocleanmenu --noconfirm
 ```
-## 12.	Reboot
-## 13.	Проверяем конфиги времени на машине (в GUI), и конфиги сервера времени.
+## 12.	Перезагружаемм систему
+## 13.	Проверяем текщее время на машине 
 ```
-sudo nano /etc/ntp.conf
+date
 ```
-### 14.	Конфигурируем скачанные пакеты. Конфиги брать из папки Alledium config.
+## 14.	Конфигурируем систему.
+### 14.1 Настройка времени
 > sudo nano /etc/ntp.conf  
 ###### Меняем IP и FQDN адреса NTP серверов на требуемые локальные
 ```
@@ -68,7 +73,7 @@ server 192.168.*.*
 server dc.server.com 
 server dc1.server.com 
 ```
-
+### 14.2 Настройка krb5 (изменить дефолтные значения на требуемые)
 
 > sudo nano /etc/krb5.conf
 ```
@@ -114,7 +119,10 @@ server dc1.server.com
 [login]
 	krb4_convert = false
 	krb4_get_tickets = false
+	
 ```
+### 14.3 Настройка sssd (изменить дефолтные значения на требуемые)
+
 > sudo nano /etc/sssd/sssd.conf 
 ```
 [sssd]
@@ -171,15 +179,18 @@ server dc1.server.com
   default_shell = /bin/bash
   ldap_krb5_init_creds = true
 ```
+### 14.4 nsswitch
 > sudo nano /etc/nsswitch.conf 
 ```
 (В первые три параметра passwd, group, shadow через пробел добавляем winbind после files)
 ```
+### 14.5 блокируем USB
 ```
 sudo systemctl start usbguard
 sudo systemctl status usbguard
 sudo systemctl enable usbguard
 ```
+### 14.6 настройка samba (заменить дефолтные значения)
 > sudo nano /etc/samba/smb.conf 
 ```
 [global]
@@ -211,7 +222,7 @@ show add printer wizard = no
 printcap name = /dev/null
 disable spoolss = yes
 ```
-## 15.	Reboot
+## 15.	Перезагрузка системы
 ## 16.	Настраиваем создание "профиля" для каждого нового пользователя
 > sudo nano /etc/security/pam_winbind.conf
 ```
@@ -239,7 +250,7 @@ sudo systemctl status smb
 sudo systemctl status nmb
 sudo systemctl status winbind
 ```
-## 20.	REBOOT
+## 20.	Перезагрузка системы
 ## 21.	sudo nano /etc/pam.d/system-auth
 ```
 #%PAM-1.0
@@ -274,11 +285,11 @@ session   optional  pam_permit.so
 ##### klist
 ## 23.	Вводим машину в домен.
 ```
-sudo net ads join -U admin_user
+sudo net ads join -U [admin_user]
 ```
 ## 24.	Добавляем пользователя в группу docker
 ```
-sudo usermod -a -G docker ad_user
+sudo usermod -a -G docker [ad_username]
 ```
 ## 25.	REBOOT
 ## 26.	Включаем службы и добавляем в автозагрузку
@@ -333,7 +344,7 @@ Alias=default.target
 ```
 x11vnc --storepasswd  /etc/x11vnc.passwd
 ```
-## 31.	Меняем внешний вид.
+## 31.	Меняем DM
 ```
 sudo pacman -R sddm-kcm
 sudo pacman –R sddm
@@ -342,7 +353,7 @@ sudo pacman –S lxdm
 sudo systemctl start lxdm
 sudo systemctl enable lxdm
 ```
-## 32.	Скидываем файл fix.sh
+## 32.	Скидываем файл fix.sh (WinSCP)
 ## 33.	Обьясняем пользователю как добавить скрипт в автозагрузку !ВНИМАНИЕ! Делать из под учётки пользователя!
 1. Пуск
 2. Поиск Autostart
@@ -358,5 +369,5 @@ sudo systemctl enable lxdm
 6. Rendering backend : XRender
 7. Scale Method : Crisp
 8. Apply!
-## 35.  АНТИВИРУС????
+## 35.  АНТИВИРУС???? (WinSCP)
 
